@@ -5,6 +5,7 @@ import 'package:nas_biztech/constants/text_string.dart';
 import '../../forget_password/forget_password_options/forget_password_button_widget.dart';
 
 class LoginHeaderWidget extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
   LoginHeaderWidget({
     Key? key,
   }) : super(key: key);
@@ -15,37 +16,62 @@ class LoginHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       // E-mail TextField
-      TextFormField(
-        decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.person_outline_outlined),
-          labelText: tEmail,
-          hintText: tEmail,
-          border: OutlineInputBorder(),
-        ),
-      ),
-      const SizedBox(height: tFormHeight - 20),
 
-      // Password TextField
-      ValueListenableBuilder(
-          valueListenable: toggle,
-          builder: ((context, value, child) {
-            return TextFormField(
-              obscureText: toggle.value,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.fingerprint),
-                labelText: tPassword,
-                hintText: tPassword,
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: (() {
-                    toggle.value = !toggle.value;
-                  }),
-                  icon: Icon(
-                      toggle.value ? Icons.visibility_off : Icons.visibility),
+      Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.person_outline_outlined),
+                  labelText: tEmail,
+                  hintText: tEmail,
+                  border: OutlineInputBorder(),
                 ),
+                // txt validator for Email
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter email';
+                  } else {
+                    return null;
+                  }
+                },
               ),
-            );
-          })),
+              const SizedBox(height: tFormHeight - 20),
+
+              // Password TextField
+              ValueListenableBuilder(
+                  valueListenable: toggle,
+                  builder: ((context, value, child) {
+                    return TextFormField(
+                      obscureText: toggle.value,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.fingerprint),
+                        labelText: tPassword,
+                        hintText: tPassword,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          onPressed: (() {
+                            toggle.value = !toggle.value;
+                          }),
+                          icon: Icon(toggle.value
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                        ),
+                      ),
+                      // txt validator for password
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter password';
+                        } else {
+                          return null;
+                        }
+                      },
+                    );
+                  })),
+            ],
+          )),
+
       // const SizedBox(height: tFormHeight - 30),
 
       // TextButton "Forget Password"
@@ -102,7 +128,9 @@ class LoginHeaderWidget extends StatelessWidget {
       SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {}
+          },
           child: Text(
             tLogin.toUpperCase(),
           ),

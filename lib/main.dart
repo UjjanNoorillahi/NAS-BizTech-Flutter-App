@@ -7,8 +7,11 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:nas_biztech/features/authentication/screens/login/login_screen.dart';
 import 'package:nas_biztech/features/authentication/screens/login/signup/signup_screen.dart';
 import 'package:nas_biztech/utils/theme/widget_themes/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
