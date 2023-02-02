@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:nas_biztech/constants/sizes.dart';
 import 'package:nas_biztech/constants/text_string.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:nas_biztech/utils/utils.dart';
 
 class SignUpFormWidget extends StatelessWidget {
-  const SignUpFormWidget({
+  final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  SignUpFormWidget({
     Key? key,
   }) : super(key: key);
 
@@ -13,6 +21,7 @@ class SignUpFormWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
       child: Form(
+        key: _formKey, // form key to validate the cradientails
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -21,13 +30,30 @@ class SignUpFormWidget extends StatelessWidget {
                   label: Text(tFullName),
                   prefixIcon: Icon(Icons.person_outline_rounded),
                   border: OutlineInputBorder()),
+              validator: (value) {
+                // validator to check full name
+                if (value!.isEmpty) {
+                  return 'Enter full name';
+                } else {
+                  return null;
+                }
+              },
             ),
             const SizedBox(height: tFormHeight - 20),
             TextFormField(
+              controller: emailController,
               decoration: const InputDecoration(
                   label: Text(tEmail),
                   prefixIcon: Icon(Icons.email_outlined),
                   border: OutlineInputBorder()),
+              validator: (value) {
+                // validator to check email
+                if (value!.isEmpty) {
+                  return 'Enter email';
+                } else {
+                  return null;
+                }
+              },
             ),
             const SizedBox(height: tFormHeight - 20),
             TextFormField(
@@ -35,6 +61,14 @@ class SignUpFormWidget extends StatelessWidget {
                   label: Text(tPhoneNo),
                   prefixIcon: Icon(Icons.numbers),
                   border: OutlineInputBorder()),
+              validator: (value) {
+                // validator to check phone number
+                if (value!.isEmpty) {
+                  return 'Enter phone number';
+                } else {
+                  return null;
+                }
+              },
             ),
             const SizedBox(height: tFormHeight - 20),
             // password
@@ -43,6 +77,7 @@ class SignUpFormWidget extends StatelessWidget {
                 valueListenable: toggle,
                 builder: ((context, value, child) {
                   return TextFormField(
+                    controller: passwordController,
                     obscureText: toggle.value,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.fingerprint),
@@ -58,6 +93,14 @@ class SignUpFormWidget extends StatelessWidget {
                             : Icons.visibility),
                       ),
                     ),
+                    validator: (value) {
+                      // validator to check password
+                      if (value!.isEmpty) {
+                        return 'Enter password';
+                      } else {
+                        return null;
+                      }
+                    },
                   );
                 })),
 
@@ -89,13 +132,32 @@ class SignUpFormWidget extends StatelessWidget {
                             : Icons.visibility),
                       ),
                     ),
+                    validator: (value) {
+                      // validator to confirm password
+                      if (value!.isEmpty) {
+                        return 'Enter password';
+                      } else {
+                        return null;
+                      }
+                    },
                   );
                 })),
             const SizedBox(height: tFormHeight - 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _auth
+                        .createUserWithEmailAndPassword(
+                            email: emailController.text.toString(),
+                            password: passwordController.text.toString())
+                        .then((value) {})
+                        .onError((error, stackTrace) {
+                      Utils().toastMessage(error.toString());
+                    });
+                  }
+                },
                 child: Text(tSignup.toUpperCase()),
               ),
             )

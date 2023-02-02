@@ -18,7 +18,8 @@ class SignUpScreen extends StatelessWidget {
             padding: const EdgeInsets.all(tDefaultSize),
             child: Column(
               // crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
+                // ignore: prefer_const_constructors
                 FormHeaderWidget(
                   crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -30,7 +31,7 @@ class SignUpScreen extends StatelessWidget {
                   //crossAxisAlignment: CrossAxisAlignment.start,
                 ),
                 SignUpFormWidget(),
-                SignUpFooterWidget(),
+                const SignUpFooterWidget(),
               ],
             ),
           ),
