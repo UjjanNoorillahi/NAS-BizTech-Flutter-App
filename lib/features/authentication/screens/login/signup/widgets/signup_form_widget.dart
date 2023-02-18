@@ -3,6 +3,9 @@ import 'package:nas_biztech/constants/sizes.dart';
 import 'package:nas_biztech/constants/text_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nas_biztech/utils/utils.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../../../provider/auth_provider.dart';
 
 class SignUpFormWidget extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -18,6 +21,7 @@ class SignUpFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ValueNotifier<bool> toggle = ValueNotifier<bool>(true);
+    ValueNotifier<bool> circularIndicator = ValueNotifier<bool>(false);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
       child: Form(
@@ -143,24 +147,38 @@ class SignUpFormWidget extends StatelessWidget {
                   );
                 })),
             const SizedBox(height: tFormHeight - 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _auth
-                        .createUserWithEmailAndPassword(
+            ValueListenableBuilder(
+                valueListenable: circularIndicator,
+                builder: (context, value, child) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        circularIndicator.value = true;
+                        if (_formKey.currentState!.validate()) {
+                          //circularIndicator.value = false;
+                          _auth
+                              .createUserWithEmailAndPassword(
                             email: emailController.text.toString(),
-                            password: passwordController.text.toString())
-                        .then((value) {})
-                        .onError((error, stackTrace) {
-                      Utils().toastMessage(error.toString());
-                    });
-                  }
-                },
-                child: Text(tSignup.toUpperCase()),
-              ),
-            )
+                            password: passwordController.text.toString(),
+                          )
+                              .then((value) {
+                            circularIndicator.value = false;
+                            debugPrint(value.toString() + 'Debug Value....');
+                          }).onError((error, stackTrace) {
+                            Utils().toastMessage(error.toString());
+                            circularIndicator.value = false;
+                          });
+                        }
+                      },
+                      child: circularIndicator.value == true
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text(tSignup.toUpperCase()),
+                    ),
+                  );
+                })
           ],
         ),
       ),
