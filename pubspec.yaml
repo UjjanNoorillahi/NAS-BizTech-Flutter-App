@@ -51,11 +51,16 @@ flutter:
   - assets/images/nas_logo.png
   - assets/logo/google_logo.png
   - assets/logo/facebook_logo.png
-  - assets/images/icon_heart.svg
   - assets/images/icon_home.png
   - assets/images/icon_homebook.png
   - assets/images/icon_profile.png
   - assets/images/icon_heart.png
+
+  - assets/images/icon-book-open.svg
+  - assets/images/icon-heart-empty.svg
+  - assets/images/icon-home.svg
+  - assets/images/icon-profile.svg
+  - assets/images/icon-search.svg
 
     # - images/a_dot_burr.jpeg
     # - images/a_dot_ham.jpeg
